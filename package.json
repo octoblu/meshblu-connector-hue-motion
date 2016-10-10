@@ -1,6 +1,6 @@
 {
   "name": "meshblu-connector-hue-motion",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Meshblu Connector ",
   "homepage": "https://github.com/octoblu/meshblu-connector-hue-motion",
   "bugs": "https://github.com/octoblu/meshblu-connector-hue-motion/issues",
