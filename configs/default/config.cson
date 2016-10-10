@@ -1,0 +1,16 @@
+title: "Default Configuration"
+type: "object"
+properties:
+  options:
+    type: "object"
+    properties:
+      sensorPollInterval:
+        type: "integer"
+        minimum: 500
+        default: 5000
+    required: [
+      "sensorPollInterval"
+    ]
+required: [
+  "options"
+]
