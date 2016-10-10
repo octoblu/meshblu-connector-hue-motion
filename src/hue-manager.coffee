@@ -4,7 +4,7 @@ HueUtil        = require 'hue-util'
 debug          = require('debug')('meshblu-connector-hue:hue-manager')
 
 class HueManager extends EventEmitter
-  connect: ({@ipAddress, @apiUsername, @sensorPollInterval, @apikey}, callback) =>
+  connect: ({@ipAddress, @apiUsername, @sensorName, @pollBy, @sensorPollInterval, @apikey}, callback) =>
     @_emit = _.throttle @emit, 500, {leading: true, trailing: false}
     @apikey ?= {}
     {username} = @apikey
@@ -24,6 +24,8 @@ class HueManager extends EventEmitter
     @hue.checkMotion (error, result) =>
       console.error error if error?
       return callback error if error?
+      result = result.presence[@sensorName] if @pollBy
+      result = result if !@pollBy
       callback null, result
 
   _createPollInterval: =>
@@ -38,6 +40,9 @@ class HueManager extends EventEmitter
   _pollSensor: (callback=->) =>
     @_checkMotion (error, result) =>
       return callback error if error?
+      return callback() if _.isEqual result, @previousResult
+      @previousResult = result
+      result = { motion: result, name: @sensorName } if @pollBy
       @_emit 'motion', result
 
   _setInitialState: (callback) =>
