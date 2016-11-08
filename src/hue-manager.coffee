@@ -8,7 +8,7 @@ class HueManager extends EventEmitter
     @_emit = _.throttle @emit, 500, {leading: true, trailing: false}
     @apikey ?= {}
     {username} = @apikey
-    @apiUsername ?= 'newdeveloper'
+    @apiUsername = 'newdeveloper' if _.isEmpty @apiUsername
     @apikey.devicetype = @apiUsername
     @hue = new HueUtil @apiUsername, @ipAddress, username, @_onUsernameChange
     @_setInitialState (error) =>
@@ -37,7 +37,10 @@ class HueManager extends EventEmitter
     @apikey.username = username
     @_emit 'change:username', {@apikey}
 
-  _pollSensor: (callback=->) =>
+  _pollSensor: (callback) =>
+    callback ?= (error) =>
+      @emit 'error', error if error?
+
     @_checkMotion (error, result) =>
       return callback error if error?
       return callback() if _.isEqual result, @previousResult
