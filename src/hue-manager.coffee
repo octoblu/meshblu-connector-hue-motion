@@ -11,12 +11,15 @@ class HueManager extends EventEmitter
     @apiUsername = 'newdeveloper' if _.isEmpty @apiUsername
     @apikey.devicetype = @apiUsername
     @hue = new HueUtil @apiUsername, @ipAddress, username, @_onUsernameChange
-    @hue.verify (error) =>
+    @verify (error) =>
       return callback error if error?
       @_setInitialState (error) =>
         return callback error if error?
         @_createPollInterval()
         callback()
+
+  verify: (callback) => # for testing
+    @hue.verify callback
 
   close: (callback) =>
     clearInterval @pollInterval
